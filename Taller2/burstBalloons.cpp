@@ -1,93 +1,37 @@
 #include <iostream>
-#include <set>
 #include <vector>
-#include <algorithm>
+#include <unordered_map>
 
 using namespace std;
 
-// int main()
-//{
-//     int n;
-//     cin >> n;
-//
-//     vector<int> heightsBallons(n);
-//     multiset<int, greater<int>> heightsBallonsSet;
-//
-//     for (int i = 0; i < n; i++)
-//     {
-//         int height;
-//         cin >> heightsBallons[i];
-//         heightsBallonsSet.insert(heightsBallons[i]);
-//     }
-//
-//     int j = n;
-//     int amountArrows = 0;
-//
-//     while (n > 0)
-//     {
-//         amountArrows++;
-//         // Extract the more high ballon
-//         int heightArrow = *heightsBallonsSet.begin();
-//         for (int i = 0; i < n; i++)
-//         {
-//             if (heightsBallons[i] == -1)
-//             {
-//                 continue;
-//             }
-//
-//             if (heightsBallons[i] == heightArrow)
-//             {
-//                 heightsBallonsSet.erase(heightsBallonsSet.find(heightArrow));
-//
-//                 heightsBallons[i] = -1;
-//
-//                 heightArrow--;
-//                 n--;
-//             }
-//         }
-//     }
-//
-//     cout << amountArrows << endl;
-//
-//     return 0;
-// }
-
-int main()
-{
+int main() {
     int n;
     cin >> n;
+
     vector<int> heightsBallons(n);
-    for (int i = 0; i < n; i++)
-    {
+    unordered_map<int, int> arrows; // Guarda cuántas flechas están disponibles para cada altura
+
+    for (int i = 0; i < n; ++i) {
         cin >> heightsBallons[i];
     }
 
-    int bustedBalloons = 0;
     int amountArrows = 0;
-    while (bustedBalloons < n)
-    {
-        amountArrows++;
-        int heightArrow = *max_element(heightsBallons.begin(), heightsBallons.end());
-        for (int i = 0; i < n; i++)
-        {
-            int init = i;
-            while (heightsBallons[i] == heightArrow)
-            {
-                heightsBallons[i] = -1;
-                heightArrow--;
-                bustedBalloons++;
-                i++;
-            }
-            if (init != i)
-            {
-                heightsBallons.erase(heightsBallons.begin() + init, heightsBallons.begin() + i);
-                i = init;
-            }
-            if (heightArrow == 0)
-            {
-                break;
-            }
+
+    for (int i = 0; i < n; ++i) {
+        int height = heightsBallons[i];
+
+        // Si ya existe una flecha en esta altura, la usamos para explotar este globo
+        if (arrows[height] > 0) {
+            arrows[height]--;  // Usamos la flecha
+            arrows[height - 1]++;  // Esta flecha ahora puede explotar globos en altura - 1
+        } else {
+            // Si no hay flecha disponible, disparamos una nueva flecha
+            amountArrows++;
+            arrows[height - 1]++;  // Esta nueva flecha ahora puede explotar globos en altura - 1
         }
     }
+
     cout << amountArrows << endl;
+
+    return 0;
 }
