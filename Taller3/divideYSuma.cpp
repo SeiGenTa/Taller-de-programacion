@@ -27,7 +27,6 @@ int main()
 
     // Caso sin tener que mover nada
     int sum_left = 0;
-    int sum_right = 0;
     int i = 0;
     while (i < n)
     {
@@ -37,9 +36,7 @@ int main()
             cout << "YES" << endl;
             return 0;
         }
-        if (sum_left > mitad)
-        {
-            sum_right = sum_total - (sum_left - a[i]); // Este es el caso en que se tiene que mover un elemento desde la derecha
+        if(sum_left > mitad){
             break;
         }
         i++;
@@ -55,9 +52,28 @@ int main()
             return 0;
         }
     }
+
+    int sum_right = 0;
+    i = n - 1;
+    while (i > 0)
+    {
+        sum_right += a[i];
+        if (sum_right == mitad)
+        {
+            cout << "YES" << endl;
+            return 0;
+        }
+        if(sum_right > mitad){
+            break;
+        }
+        i--;
+    }
+
     diference = sum_right - mitad;
-    for(int j = i+1; j < n; j++){
-        if(a[j] == diference){
+    for (int j = n - 1; j >= i; j--)
+    {
+        if (a[j] == diference)
+        {
             cout << "YES" << endl;
             return 0;
         }
